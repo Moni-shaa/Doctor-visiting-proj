@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 const doctors = [
   {
@@ -8,6 +8,7 @@ const doctors = [
     clinic: "Apex Multispeciality and Mater...",
     location: "Kondhawa Khurd",
     fee: "₹ 600",
+    image: "https://randomuser.me/api/portraits/men/1.jpg",
   },
   {
     name: "Dr. Subhash Bajaj",
@@ -16,6 +17,7 @@ const doctors = [
     clinic: "Dr. Bajaj Wellness Clinic",
     location: "Wanowarie",
     fee: "₹ 600",
+    image: "https://randomuser.me/api/portraits/men/2.jpg",
   },
   {
     name: "Dr. Muffaddal Zakir",
@@ -24,6 +26,7 @@ const doctors = [
     clinic: "Sparsh Polyclinic",
     location: "Wanwadi",
     fee: "₹ 600",
+    image: "https://randomuser.me/api/portraits/men/3.jpg",
   },
   {
     name: "Dr. Ajay Gangoli",
@@ -32,29 +35,65 @@ const doctors = [
     clinic: "Niramaya Clinic",
     location: "Wanowarie",
     fee: "₹ 400",
+    image: "https://randomuser.me/api/portraits/men/4.jpg",
   },
 ];
 
 function DoctorListing() {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredDoctors, setFilteredDoctors] = useState(doctors);
+
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    const filtered = doctors.filter((doc) =>
+      doc.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredDoctors(filtered);
+  };
+
   return (
-    <div className="space-y-4">
-      {doctors.map((doc, index) => (
-        <div key={index} className="bg-white p-6 rounded-2xl shadow flex justify-between items-center">
-          <div>
-            <h3 className="text-xl font-bold">{doc.name}</h3>
-            <p className="text-gray-600">{doc.specialization}</p>
-            <p className="text-sm text-gray-500">{doc.experience}</p>
-            <p className="text-sm text-gray-500">{doc.clinic}</p>
-            <p className="text-sm text-gray-500">{doc.location}</p>
+    <div className="p-4 space-y-4">
+      <input
+        type="text"
+        placeholder="Search doctors..."
+        className="w-full p-3 border border-gray-300 rounded-xl"
+        value={searchTerm}
+        onChange={handleSearch}
+      />
+
+      {filteredDoctors.length === 0 ? (
+        <p className="text-center text-gray-500">No doctors found.</p>
+      ) : (
+        filteredDoctors.map((doc, index) => (
+          <div
+            key={index}
+            className="bg-white p-6 rounded-2xl shadow flex items-center justify-between"
+          >
+            <div className="flex items-center space-x-4">
+              <img
+                src={doc.image}
+                alt={doc.name}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+              <div>
+                <h3 className="text-xl font-bold">{doc.name}</h3>
+                <p className="text-gray-600">{doc.specialization}</p>
+                <p className="text-sm text-gray-500">{doc.experience}</p>
+                <p className="text-sm text-gray-500">{doc.clinic}</p>
+                <p className="text-sm text-gray-500">{doc.location}</p>
+              </div>
+            </div>
+
+            <div className="flex flex-col items-end">
+              <p className="text-lg font-bold text-blue-700">{doc.fee}</p>
+              <button className="mt-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50">
+                Book Appointment
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col items-end">
-            <p className="text-lg font-bold text-blue-700">{doc.fee}</p>
-            <button className="mt-2 px-4 py-2 border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50">
-              Book Appointment
-            </button>
-          </div>
-        </div>
-      ))}
+        ))
+      )}
     </div>
   );
 }
